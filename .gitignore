@@ -71,3 +71,7 @@ scratch/
 personal/
 
 .calva/
+
+dev-resources/
+
+prod-resources/

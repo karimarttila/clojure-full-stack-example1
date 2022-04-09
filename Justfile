@@ -1,3 +1,6 @@
+# This is the Justfile for the project commands.
+# See: https://github.com/casey/just
+
 @list:
    just --list
 
@@ -30,9 +33,14 @@
    mkdir -p classes
    npm install
 
-# start frontend auto-compilation
+# Start frontend auto-compilation.
 @frontend:
-    npm run dev
+    npm run shadow:watch
+
+# Start css auto-compilation.
+# NOTE: do not use "npm run dev", since postcss breaks occasionally - run frontend and css separately.
+@css:
+    npm run postcss:watch
 
 # Update dependencies.
 @outdated:

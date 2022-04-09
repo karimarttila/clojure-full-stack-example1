@@ -1,0 +1,83 @@
+(ns simpleserver.main
+  (:require
+    [clojure.tools.logging :as log]
+    [clojure.tools.reader.edn :as edn]
+    [clojure.pprint]
+    [clojure.java.io :as io]
+    [nrepl.server :as nrepl]
+    [integrant.repl :as ig-repl]
+    [integrant.core :as ig]
+    [ring.adapter.jetty :as jetty]
+    [aero.core :as aero]
+    [potpuri.core :as p]
+    [simpleserver.webserver :as f-ws]
+    ))
+
+(defmethod aero/reader 'ig/ref [_ _ value] (ig/ref value))
+
+(defmethod ig/init-key :backend/profile [_ profile]
+  profile)
+
+(defmethod ig/init-key :backend/env [_ env]
+  env)
+
+(defmethod ig/init-key :backend/jetty [_ {:keys [port join? env]}]
+  (log/debug "ENTER ig/init-key :backend/jetty")
+  (-> (f-ws/handler (f-ws/routes env))
+      (jetty/run-jetty {:port port :join? join?})))
+
+(defmethod ig/halt-key! :backend/jetty [_ server]
+  (log/debug "ENTER ig/halt-key! :backend/jetty")
+  (.stop server))
+
+(defmethod ig/init-key :backend/nrepl [_ {:keys [bind port]}]
+  (log/debug "ENTER ig/init-key :backend/nrepl")
+  (if (and bind port)
+    (nrepl/start-server :bind bind :port port)
+    nil))
+
+(defmethod ig/halt-key! :backend/nrepl [_ this]
+  (log/debug "ENTER ig/halt-key! :backend/nrepl")
+  (if this
+    (nrepl/stop-server this)))
+
+(defmethod ig/suspend-key! :backend/nrepl [_ this]
+  (log/debug "ENTER ig/suspend-key! :backend/nrepl")
+  this)
+
+(defmethod ig/resume-key :backend/nrepl [_ _ _ old-impl]
+  (log/debug "ENTER ig/resume-key :backend/nrepl")
+  old-impl)
+
+; Profile is if you want to test in real GCP env:
+; you can add to the container script PROFILE=prod
+(defn read-config [profile]
+  (let [local-config (let [_ (log/debug "DEBUG: read-config " profile)
+                           file (io/file "config-local.edn")]
+                       (if (.exists file) (edn/read-string (slurp file))))]
+    (cond-> (aero/read-config (io/resource "config.edn") {:profile profile})
+            local-config (p/deep-merge local-config))))
+
+(defn system-config [myprofile]
+  (let [profile (or myprofile (some-> (System/getenv "PROFILE") keyword) :dev)
+        _ (log/info "Using profile " profile)
+        config (read-config profile)]
+    config))
+
+(defn system-config-start []
+  (system-config nil))
+
+(defn -main []
+  (log/info "System starting...")
+  (log/info "Config: " (system-config-start))
+  (ig-repl/set-prep! (system-config-start))
+  (ig-repl/go))
+
+(comment
+  (ig-repl/reset)
+  (do
+    (require '[aero.core :as aero]
+             '[clojure.java.io :as io])
+    (aero/read-config (io/resource "config.edn") {:profile :dev}))
+
+  )

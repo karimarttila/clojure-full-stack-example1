@@ -1,0 +1,20 @@
+{
+ ; Profile injected to Integrant.
+ :backend/profile #profile {:prod :prod
+                            :dev :dev
+                            :test :test}
+
+ ; Miscellaneous options.
+ :backend/env {; Using profile just for debugging purposes.
+               :profile #ig/ref :backend/profile
+               }
+
+ :backend/jetty {:port 4265
+                 :join? false
+                 :env #ig/ref :backend/env}
+
+ :backend/nrepl {:bind #profile {:prod "0.0.0.0"
+                                 :dev "localhost"
+                                 :test "localhost"}
+                 :port 4365}
+ }

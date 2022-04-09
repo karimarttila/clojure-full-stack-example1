@@ -1,10 +1,11 @@
 {
  :paths ["resources"]
- :aliases {:dev {:extra-paths ["dev-resources" "classes"]
+ :aliases {:dev {:extra-paths ["dev" "dev-resources"]
                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                              clj-kondo/clj-kondo {:mvn/version "2022.04.08"}
                               thheller/shadow-cljs {:mvn/version "2.18.0"}
-                              clj-kondo/clj-kondo {:mvn/version "2022.03.09"}
                               metosin/reagent-dev-tools {:mvn/version "0.4.2"}
+                              hashp/hashp {:mvn/version "0.2.0"}
                               }}
            :test {:extra-paths ["test/clj"]
                   :extra-deps {lambdaisland/kaocha {:mvn/version "1.64.1010"}
@@ -28,7 +29,6 @@
                                   ring/ring-core {:mvn/version "1.9.5"}
                                   ring/ring-jetty-adapter {:mvn/version "1.9.5"}
                                   ring/ring-defaults {:mvn/version "0.3.3"}
-                                  org.eclipse.jetty/jetty-client {:mvn/version "11.0.9"}
                                   clj-http/clj-http {:mvn/version "3.12.3"}
                                   nrepl/nrepl {:mvn/version "0.9.0"}}}
            :frontend {:extra-paths ["src/cljs"]
@@ -37,7 +37,9 @@
                                               :exclusions [org.clojure/core.rrb-vector]}
                                    reagent/reagent {:mvn/version "1.1.1"
                                                     :exclusions [cljsjs.react-dom/cljsjs.react-dom]}
-                                   re-frame/re-frame {:mvn/version "1.2.0"}}}
+                                   re-frame/re-frame {:mvn/version "1.2.0"}
+                                   day8.re-frame/http-fx {:mvn/version "0.2.4"}}}
+           ;:shadow-cljs {:main-opts ["-m" "shadow.cljs.devtools.cli"]}
            ;; Test runner in console.
            :test-runner {:extra-paths ["test"]
                          :extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
@@ -45,7 +47,7 @@
                          :main-opts ["-m" "cognitect.test-runner"]}
            :outdated {:extra-deps {com.github.liquidz/antq {:mvn/version "RELEASE"}}
                       :main-opts ["-m" "antq.core"]}
-           :clj-kondo {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2022.03.09"}}
+           :clj-kondo {:extra-deps {clj-kondo/clj-kondo {:mvn/version "2022.04.08"}}
                        :main-opts ["-m" "clj-kondo.main"]}
            ;; Cider specific.
            :cider-clj {:extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
