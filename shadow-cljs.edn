@@ -1,15 +1,15 @@
 {:deps {:aliases [:dev :common :backend :frontend]}
- :builds
- {:app
-  {:target :browser
-   :output-dir "dev-resources/public/js"
-   :asset-path "/js"
-   :devtools {:watch-dir "dev-resources/public"
-              :preloads [hashp.core]
-              }
-   :dev {}
-   :release {:output-dir "prod-resources/public/js"
-             :compiler-options {:source-map "prod-resources/public/js/main.js.map"
-                                :optimizations :advanced}}
-   :modules {:app {:entries [simpleserver.main]}}}}}
+ :builds {:app {:target :browser
+                :output-dir "dev-resources/public/js"
+                :asset-path "/js"
+                :devtools {:watch-dir "dev-resources/public"
+                           :preloads [hashp.core]
+                           }
+                :modules {:app {:entries [simpleserver.main]
+                                :init-fn simpleserver.main/init}}
+                :dev {}
+                :release {:output-dir "prod-resources/public/js"
+                          :compiler-options {:source-map "prod-resources/public/js/main.js.map"
+                                             :optimizations :advanced}}
+                }}}
 
