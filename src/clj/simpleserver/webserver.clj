@@ -44,6 +44,7 @@
    ["/api"
     {:swagger {:tags ["api"]}}
     ; For development purposes. Try (install httpie): http localhost:4265/api/ping
+    ; Transit example: http localhost:4265/api/ping Accept:application/transit+json -v
     ["/ping" {:get {:summary "ping get"
                     ; Don't allow any query parameters.
                     :parameters {:query [:map]}
