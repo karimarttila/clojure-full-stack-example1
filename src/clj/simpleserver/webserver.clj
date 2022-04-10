@@ -28,14 +28,14 @@
 (defn routes
   "Routes."
   [env]
-  ;; http://localhost:6265/swagger.json
+  ;; http://localhost:4265/swagger.json
   [["/swagger.json"
     {:get {:no-doc true
            :swagger {:info {:title "Simple server api"
                             :description "Simple server Api"}
                      :tags [{:name "api", :description "api"}]}
            :handler (reitit-swagger/create-swagger-handler)}}]
-   ;; http://localhost:6265/api-docs/index.html
+   ;; http://localhost:4265/api-docs/index.html
    ["/api-docs/*"
     {:get {:no-doc true
            :handler (reitit-swagger-ui/create-swagger-ui-handler
@@ -43,7 +43,7 @@
                        :url "/swagger.json"})}}]
    ["/api"
     {:swagger {:tags ["api"]}}
-    ; For development purposes. Try curl http://localhost:6161/api/ping
+    ; For development purposes. Try (install httpie): http localhost:4265/api/ping
     ["/ping" {:get {:summary "ping get"
                     ; Don't allow any query parameters.
                     :parameters {:query [:map]}
@@ -53,12 +53,14 @@
                      :responses {200 {:description "Ping success"}}
                      ;; reitit adds mt/strip-extra-keys-transformer - probably changes in reitit 1.0,
                      ;; and therefore {:closed true} is not used with reitit < 1.0.
+                     ; Try (install httpie): http POST localhost:4265/api/ping ping=jee
                      :parameters {:body [:map {:closed true} [:ping string?]]}
                      :handler (fn [req]
                                 (let [body (get-in req [:parameters :body])
                                       myreq (:ping body)]
                                   (-> {:ret :ok :request myreq :reply "pong"}
                                       (make-response))))}}]
+    ; Try (install httpie): http localhost:4265/api/version
     ["/version" {:get {:summary "Get version info"
                     :parameters {:query [:map]}
                     :responses {200 {:description "Version info success"}}
