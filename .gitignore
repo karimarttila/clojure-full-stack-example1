@@ -25,6 +25,7 @@ tmp/
 
 # Personal information
 personal-info/
+personal/
 
 # Cache directory
 .cpcache/
@@ -68,7 +69,6 @@ lsp/
 clj-scratch/
 scratch/
 
-personal/
 
 .calva/
 

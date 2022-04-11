@@ -1,6 +1,6 @@
 {
  :paths ["resources"]
- :aliases {:dev {:extra-paths ["dev" "dev-resources"]
+ :aliases {:dev {:extra-paths ["dev" "dev-resources" "dev-data"]
                  :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                               clj-kondo/clj-kondo {:mvn/version "2022.04.08"}
                               thheller/shadow-cljs {:mvn/version "2.18.0"}
@@ -18,13 +18,15 @@
                                  integrant/repl {:mvn/version "0.3.2"}}}
            :backend {:extra-paths ["src/clj"]
                      :extra-deps {metosin/ring-http-response {:mvn/version "0.9.3"}
+                                  org.clojure/data.csv {:mvn/version "1.0.1"}
                                   integrant/integrant {:mvn/version "0.8.0"}
                                   com.github.seancorfield/next.jdbc {:mvn/version "1.2.780"}
                                   clj-time/clj-time {:mvn/version "0.15.2"}
                                   org.clojure/tools.logging {:mvn/version "1.2.4"}
                                   commons-logging/commons-logging {:mvn/version "1.2"}
                                   ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
-                                  hikari-cp/hikari-cp {:mvn/version "2.14.0"}
+                                  hikari-cp/hikari-cp {:mvn/version "2.14.0"
+                                                       :exclusions [org.slf4j/slf4j-api]}
                                   org.postgresql/postgresql {:mvn/version "42.3.3"}
                                   ring/ring-core {:mvn/version "1.9.5"}
                                   ring/ring-jetty-adapter {:mvn/version "1.9.5"}
@@ -53,3 +55,4 @@
            :cider-clj {:extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
                                     cider/cider-nrepl {:mvn/version "0.28.3"}}
                        :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}}}
+
