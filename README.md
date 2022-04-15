@@ -56,7 +56,69 @@ Start the CSS build process by running: `just css`.
 
 TODO: hashp.
 
+### Production Deployment Unit
+
+There are two Just recipes: `just uberjar` for building the uberjar deployment unit and `just run-uberjar` for testing the uberjar.
+
+There are a couple of things regarding the deployment unit building that I must emphasize since these are not that obvious. I used the new Clojure [tools.build](https://clojure.org/guides/tools_build) to create the uberjar. Let's see the build process:
+
+```bash
+# Build uberjar.
+@uberjar:
+    # Clean everything.
+    rm -rf target
+    rm -rf prod-resources
+    # Frontend.
+    npm run postcss:release
+    clj -M:dev:shadow-cljs:common:backend:frontend:profile-prod release app
+    # Backend.
+    clj -T:backend:common:dev:build uber
+```
+
+So, First clean `target` and `prod-resources` to have a clean starting point. Then we create the css package and the frontend `app.js` (into the `prod-resources` folder).
+
+Then we compile the backend and build the actual jar from the backend classes, and from the `resources` (e.g. `index.html`) and the `prod-resources` (`main.css` and `app.js`). See the `build` alias in the [deps.edn](deps.edn):
+
+```clojure
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}}
+                   :ns-default mybuild}
+```
+
+In the [mybuild.clj](dev/mybuild.clj) you can find the `uber` function:
+
+
+(defn uber [_]
+  (b/copy-dir {:src-dirs ["src" "resources" "prod-resources"]
+               :target-dir class-dir})
+  (b/compile-clj {:basis basis
+                  :ns-compile ['clojure.tools.logging.impl]
+                  :class-dir class-dir})
+  (b/compile-clj {:basis basis
+                  :src-dirs ["src"]
+                  :class-dir class-dir})
+  (b/uber {:class-dir class-dir
+           :uber-file uber-file
+           :basis basis
+           :main 'simpleserver.main}))
+
+Now, here comes the hairy part, so hairy that I got help from my Metosin colleagues. You have to remember two things:
+
+Since the logging framework requires the `LoggingFactory` you need to add extra compilation phase for it:
+
+```clojure
+  (b/compile-clj {:basis basis
+                  :ns-compile ['clojure.tools.logging.impl]
+                  :class-dir class-dir})
+```
+
+The reason for this is explained in this ticket: [CLJ-1544](https://clojure.atlassian.net/browse/CLJ-1544).
+
+Secondly, you must add `(:gen-class))` in your main clj file (as in [main.clj](src/clj/simpleserver/main.clj)).
+
+
+
 ## Application
+
 ### Backend
 
 TODO: reitit, malli, aero, integrant ...

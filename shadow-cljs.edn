@@ -1,4 +1,4 @@
-{:deps {:aliases [:dev :common :backend :frontend]}
+{:deps {:aliases [:dev :profile-dev :common :backend :frontend]}
  :builds {:app {:target :browser
                 :output-dir "dev-resources/public/js"
                 :asset-path "/js"

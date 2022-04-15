@@ -1,18 +1,21 @@
 {
  :paths ["resources"]
- :aliases {:dev {:extra-paths ["dev" "dev-resources" "dev-data"]
-                 :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+ :aliases {:dev {:extra-paths ["dev"]
+                 :extra-deps {
                               clj-kondo/clj-kondo {:mvn/version "2022.04.08"}
                               thheller/shadow-cljs {:mvn/version "2.18.0"}
                               metosin/reagent-dev-tools {:mvn/version "0.4.2"}
                               hashp/hashp {:mvn/version "0.2.0"}
                               }}
+           :profile-dev {:extra-paths ["resources" "dev-resources"]}
+           :profile-prod {:extra-paths ["resources" "prod-resources"]}
            :test {:extra-paths ["test/clj"]
                   :extra-deps {lambdaisland/kaocha {:mvn/version "1.64.1010"}
                                lambdaisland/kaocha-cljs {:mvn/version "1.0.107"}
                                }}
            :common {:extra-paths ["src/cljc"]
-                    :extra-deps {metosin/reitit {:mvn/version "0.5.18"}
+                    :extra-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                                 metosin/reitit {:mvn/version "0.5.18"}
                                  aero/aero {:mvn/version "1.1.6"}
                                  metosin/potpuri {:mvn/version "0.5.3"}
                                  integrant/repl {:mvn/version "0.3.2"}}}
@@ -41,7 +44,9 @@
                                                     :exclusions [cljsjs.react-dom/cljsjs.react-dom]}
                                    re-frame/re-frame {:mvn/version "1.2.0"}
                                    day8.re-frame/http-fx {:mvn/version "0.2.4"}}}
-           ;:shadow-cljs {:main-opts ["-m" "shadow.cljs.devtools.cli"]}
+           :build {:deps {io.github.clojure/tools.build {:git/tag "v0.8.1" :git/sha "7d40500"}}
+                   :ns-default mybuild}
+           :shadow-cljs {:main-opts ["-m" "shadow.cljs.devtools.cli"]}
            ;; Test runner in console.
            :test-runner {:extra-paths ["test"]
                          :extra-deps {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"

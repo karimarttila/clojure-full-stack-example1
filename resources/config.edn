@@ -9,12 +9,18 @@
                :profile #ig/ref :backend/profile
                }
 
- :backend/jetty {:port 4265
+ :backend/jetty {:port #profile {:dev #long #or [#env PORT 4265]
+                                 :test #long #or [#env PORT 4266]
+                                 :prod #long #or [#env PORT 4267]}
                  :join? false
-                 :env #ig/ref :backend/env}
+                 :env #ig/ref :backend/env
+                 }
 
  :backend/nrepl {:bind #profile {:prod "0.0.0.0"
-                                 :dev "localhost"
-                                 :test "localhost"}
-                 :port 4365}
+                                 :test "localhost"
+                                 :dev "localhost"}
+                 :port #profile {:dev #long #or [#env PORT 4365]
+                                 :test #long #or [#env PORT 4366]
+                                 :prod #long #or [#env PORT 4367]}}
+
  }

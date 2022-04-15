@@ -10,8 +10,8 @@
     [ring.adapter.jetty :as jetty]
     [aero.core :as aero]
     [potpuri.core :as p]
-    [simpleserver.webserver :as f-ws]
-    ))
+    [simpleserver.webserver :as f-ws])
+  (:gen-class))
 
 (defmethod aero/reader 'ig/ref [_ _ value] (ig/ref value))
 
@@ -69,9 +69,10 @@
 
 (defn -main []
   (log/info "System starting...")
-  (log/info "Config: " (system-config-start))
-  (ig-repl/set-prep! (system-config-start))
-  (ig-repl/go))
+  (let [config (system-config-start)
+        _ (log/info "Config: " config)]
+    (ig-repl/set-prep! (constantly config))
+    (ig-repl/go)))
 
 (comment
   (ig-repl/reset)
