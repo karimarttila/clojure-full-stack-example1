@@ -121,27 +121,32 @@
 (comment
 
   (require '[clj-http.client])
-  (clj-http.client/get
-    (str "http://localhost:4265/api/version") {:debug true :accept "application/json"})
+  (clj-http.client/get (str "http://localhost:4265/api/version") {:debug true :accept "application/json"})
+  (clj-http.client/get (str "http://localhost:4265/api/version") {:debug true :accept "application/transit+json"})
 
-  (clj-http.client/get
-    (str "http://localhost:4265/index.html") {:debug true})
+  (clj-http.client/get (str "http://localhost:4265/api/ping") {:debug true :accept "application/json"})
+  (clj-http.client/get (str "http://localhost:4265/api/ping") {:debug true :accept "application/transit+json"})
 
-  (clj-http.client/get
-    (str "http://localhost:4265") {:debug true})
+  (clj-http.client/post (str "http://localhost:4265/api/ping") {:form-params {:ping "yee!"}
+                                                                :content-type :json
+                                                                :debug true
+                                                                :accept "application/json"})
+  (clj-http.client/post (str "http://localhost:4265/api/ping") {:form-params {:ping "yee!"}
+                                                                :content-type :transit+json
+                                                                :debug true
+                                                                :accept "application/transit+json"})
 
-  (clj-http.client/get
-    (str "http://localhost:4265/index.html") {:debug true})
+  (clj-http.client/get (str "http://localhost:4265/index.html") {:debug true})
+
+  (clj-http.client/get (str "http://localhost:4265") {:debug true})
 
   (user/system)
 
   (handler {:routes (routes (user/env))})
 
-  (clj-http.client/get
-    (str "https://reqres.in/api/users/2") {:debug true :accept "application/json"})
+  ; TODO: later.
+  (clj-http.client/get (str "https://reqres.in/api/users/2") {:debug true :accept "application/json"})
 
-  (clj-http.client/get
-    ; TODO
-    (str "http://localhost:4265/info") {:debug true :accept "application/transit"})
+
 
   )
