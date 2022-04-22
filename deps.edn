@@ -1,6 +1,6 @@
 {
  :paths ["resources"]
- :aliases {:dev {:extra-paths ["dev"]
+ :aliases {:dev {:extra-paths ["dev" "dev-data"]
                  :extra-deps {
                               clj-kondo/clj-kondo {:mvn/version "2022.04.08"}
                               thheller/shadow-cljs {:mvn/version "2.18.0"}

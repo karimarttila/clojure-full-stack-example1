@@ -4,6 +4,7 @@
     [clojure.tools.reader.edn :as edn]
     [clojure.pprint]
     [clojure.java.io :as io]
+    [hikari-cp.core :as hikari-cp]
     [nrepl.server :as nrepl]
     [integrant.repl :as ig-repl]
     [integrant.core :as ig]
@@ -29,6 +30,14 @@
 (defmethod ig/halt-key! :backend/jetty [_ server]
   (log/debug "ENTER ig/halt-key! :backend/jetty")
   (.stop server))
+
+(defmethod ig/init-key :backend/postgres [_ opts]
+  (log/debug "ENTER ig/init-key :backend/postgres")
+  {:datasource (hikari-cp/make-datasource opts)})
+
+(defmethod ig/halt-key! :backend/postgres [_ this]
+  (log/debug "ENTER ig/halt-key! :backend/postgres")
+  (hikari-cp/close-datasource (:datasource this)))
 
 (defmethod ig/init-key :backend/nrepl [_ {:keys [bind port]}]
   (log/debug "ENTER ig/init-key :backend/nrepl")
@@ -80,5 +89,7 @@
     (require '[aero.core :as aero]
              '[clojure.java.io :as io])
     (aero/read-config (io/resource "config.edn") {:profile :dev}))
+
+  (user/system)
 
   )

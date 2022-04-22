@@ -4,6 +4,16 @@
                             :dev :dev
                             :test :test}
 
+ :backend/postgres {:adapter "postgresql"
+                    :username #or [#env DB_USERNAME "simpleserver"]
+                    :password #or [#env DB_PASSWORD "simpleserver"]
+                    :server-name #or [#env DB_HOST "localhost"]
+                    :port-number #long #or [#env DB_PORT 5532]
+                    :database-name #or [#env DB_NAME "simpleserver"]
+                    :connection-timeout 3000
+                    :validation-timeout 3000
+                    :maximum-pool-size 5}
+
  ; Miscellaneous options.
  :backend/env {; Using profile just for debugging purposes.
                :profile #ig/ref :backend/profile
