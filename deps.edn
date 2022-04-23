@@ -3,7 +3,8 @@
  :aliases {:dev {:extra-paths ["dev" "dev-data"]
                  :extra-deps {
                               clj-kondo/clj-kondo {:mvn/version "2022.04.08"}
-                              thheller/shadow-cljs {:mvn/version "2.18.0"}
+                              thheller/shadow-cljs {:mvn/version "2.18.0"
+                                                    :exclusions [org.slf4j/slf4j-api]}
                               metosin/reagent-dev-tools {:mvn/version "0.4.2"}
                               hashp/hashp {:mvn/version "0.2.0"}
                               }}
@@ -26,11 +27,17 @@
                                   com.github.seancorfield/next.jdbc {:mvn/version "1.2.780"}
                                   clj-time/clj-time {:mvn/version "0.15.2"}
                                   org.clojure/tools.logging {:mvn/version "1.2.4"}
-                                  commons-logging/commons-logging {:mvn/version "1.2"}
+                                  ;commons-logging/commons-logging {:mvn/version "1.2"}
+                                  ; NOTE: SLF4J: Class path contains multiple SLF4J bindings. is just a warning.
+                                  ch.qos.logback/logback-core {:mvn/version "1.2.11"}
+                                  org.slf4j/slf4j-api {:mvn/version "1.7.36"}
                                   ch.qos.logback/logback-classic {:mvn/version "1.2.11"}
-                                  hikari-cp/hikari-cp {:mvn/version "2.14.0"
+                                  com.zaxxer/HikariCP {:mvn/version "5.0.1"
                                                        :exclusions [org.slf4j/slf4j-api]}
-                                  org.postgresql/postgresql {:mvn/version "42.3.3"}
+                                  #_#_hikari-cp/hikari-cp {:mvn/version "2.14.0"
+                                                           :exclusions [org.slf4j/slf4j-api]}
+                                  org.postgresql/postgresql {:mvn/version "42.3.3"
+                                                             :exclusions [org.slf4j/slf4j-api]}
                                   ring/ring-core {:mvn/version "1.9.5"}
                                   ring/ring-jetty-adapter {:mvn/version "1.9.5"}
                                   ring/ring-defaults {:mvn/version "0.3.3"}
