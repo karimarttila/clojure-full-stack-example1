@@ -9,6 +9,7 @@
 (defn system [] (or state/system (throw (ex-info "System not running" {}))))
 (defn env [] (:backend/env (system)))
 (defn db [] (:backend/db (system)))
+(defn db-super [] (:backend/db-super (system)))
 
 (defn my-dummy-reset []
   (reset))

@@ -3,6 +3,7 @@ version: '3'
 services:
   postgres:
     environment:
+      POSTGRES_USER: superuser
       POSTGRES_PASSWORD: superuser
     build: .
     expose:
@@ -11,6 +12,7 @@ services:
       - "5512:5432"
     volumes:
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./docker-dev-data:/var/lib/postgresql/dev-data
     networks:
       [ss2_network]
 networks:

@@ -42,6 +42,10 @@
   (log/debug "ENTER ig/halt-key! :backend/postgres")
   (.close (:ds this)))
 
+(defmethod ig/init-key :backend/db-super [_ opts]
+  (log/debug "ENTER ig/init-key! :backend/db-super")
+  opts)
+
 (defmethod ig/init-key :backend/env [_ env]
   (log/debug "ENTER ig/init-key! :backend/env")
   env)

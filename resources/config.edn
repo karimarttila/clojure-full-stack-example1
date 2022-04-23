@@ -4,8 +4,20 @@
                             :dev :dev
                             :test :test}
 
- :backend/db {:dbtype "postgres"
+ ; For initializing the devevelopment db with development data.
+ :backend/db-super {:dbtype "postgresql"
+                    :dbname #or [#env DB_NAME "simpleserver"]
+                    ; NOTE: Use :user when connecting directly!
+                    :user #or [#env DB_SUPER_USERNAME "superuser"]
+                    :password #or [#env DB_SUPER_PASSWORD "superuser"]
+                    :host #or [#env DB_HOST "localhost"]
+                    :port #long #or [#env DB_PORT 5512]
+                    ; NOTE: See: postgres/docker-compose-setup-local-postgres.yml
+                    :dev-data "/var/lib/postgresql/dev-data"}
+
+ :backend/db {:dbtype "postgresql"
               :dbname #or [#env DB_NAME "simpleserver"]
+              ; NOTE: Use :username when using hikari connection pool!
               :username #or [#env DB_USERNAME "simpleserver"]
               :password #or [#env DB_PASSWORD "simpleserver"]
               :host #or [#env DB_HOST "localhost"]
