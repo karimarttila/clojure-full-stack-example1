@@ -4,7 +4,8 @@
     [clojure.tools.reader.edn :as edn]
     [clojure.pprint]
     [clojure.java.io :as io]
-    [hikari-cp.core :as hikari-cp]
+    [next.jdbc :as jdbc]
+    [next.jdbc.connection :as connection]
     [nrepl.server :as nrepl]
     [integrant.repl :as ig-repl]
     [integrant.core :as ig]
@@ -12,15 +13,13 @@
     [aero.core :as aero]
     [potpuri.core :as p]
     [simpleserver.webserver :as f-ws])
+  (:import (com.zaxxer.hikari HikariDataSource))
   (:gen-class))
 
 (defmethod aero/reader 'ig/ref [_ _ value] (ig/ref value))
 
 (defmethod ig/init-key :backend/profile [_ profile]
   profile)
-
-(defmethod ig/init-key :backend/env [_ env]
-  env)
 
 (defmethod ig/init-key :backend/jetty [_ {:keys [port join? env]}]
   (log/debug "ENTER ig/init-key :backend/jetty")
@@ -31,13 +30,21 @@
   (log/debug "ENTER ig/halt-key! :backend/jetty")
   (.stop server))
 
-(defmethod ig/init-key :backend/postgres [_ opts]
+(defmethod ig/init-key :backend/db [_ opts]
   (log/debug "ENTER ig/init-key :backend/postgres")
-  {:datasource (hikari-cp/make-datasource opts)})
+  (let [^HikariDataSource ds (connection/->pool com.zaxxer.hikari.HikariDataSource opts)]
+      ; Initializes the pool and performs a validation check.
+      ; See: https://cljdoc.org/d/com.github.seancorfield/next.jdbc/1.2.780/doc/getting-started
+    (.close (jdbc/get-connection ds))
+    {:ds ds}))
 
-(defmethod ig/halt-key! :backend/postgres [_ this]
+(defmethod ig/halt-key! :backend/db [_ this]
   (log/debug "ENTER ig/halt-key! :backend/postgres")
-  (hikari-cp/close-datasource (:datasource this)))
+  (.close (:ds this)))
+
+(defmethod ig/init-key :backend/env [_ env]
+  (log/debug "ENTER ig/init-key! :backend/env")
+  env)
 
 (defmethod ig/init-key :backend/nrepl [_ {:keys [bind port]}]
   (log/debug "ENTER ig/init-key :backend/nrepl")
@@ -91,5 +98,7 @@
     (aero/read-config (io/resource "config.edn") {:profile :dev}))
 
   (user/system)
+  (user/env)
+  (user/db)
 
   )

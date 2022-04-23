@@ -3,6 +3,7 @@
     [clojure.data.csv :as csv]
     [clojure.java.io :as io]
     [clojure.string :as str]
+    [next.jdbc :as jdbc]
     [hashp.core]))
 
 (def dev-data-dir "dev-data")
@@ -40,10 +41,19 @@
 ;                       id (doc->db doc) (doc->db doc)]))
 ;  )
 
+
+
+
+(defn reset-product-groups [db]
+  (-> (jdbc/execute-one! (:ds db) ["DELETE FROM simpleserver.product_group"])))
+
 (comment
+  ;["SELECT * FROM simpleserver.product_book"]
   (get-books dev-data-dir)
   (get-movies dev-data-dir)
   (get-product-groups dev-data-dir)
+  (reset-product-groups (user/db))
+  (user/db)
   )
 
 

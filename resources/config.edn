@@ -4,27 +4,25 @@
                             :dev :dev
                             :test :test}
 
- :backend/postgres {:adapter "postgresql"
-                    :username #or [#env DB_USERNAME "simpleserver"]
-                    :password #or [#env DB_PASSWORD "simpleserver"]
-                    :server-name #or [#env DB_HOST "localhost"]
-                    :port-number #long #or [#env DB_PORT 5532]
-                    :database-name #or [#env DB_NAME "simpleserver"]
-                    :connection-timeout 3000
-                    :validation-timeout 3000
-                    :maximum-pool-size 5}
+ :backend/db {:dbtype "postgres"
+              :dbname #or [#env DB_NAME "simpleserver"]
+              :username #or [#env DB_USERNAME "simpleserver"]
+              :password #or [#env DB_PASSWORD "simpleserver"]
+              :host #or [#env DB_HOST "localhost"]
+              :port #long #or [#env DB_PORT 5512]
+              :dataSourceProperties {:connection-timeout 3000
+                                     :validation-timeout 3000
+                                     :maximum-pool-size 5}}
 
- ; Miscellaneous options.
- :backend/env {; Using profile just for debugging purposes.
-               :profile #ig/ref :backend/profile
-               }
 
  :backend/jetty {:port #profile {:dev #long #or [#env PORT 4265]
                                  :test #long #or [#env PORT 4266]
                                  :prod #long #or [#env PORT 4267]}
                  :join? false
-                 :env #ig/ref :backend/env
-                 }
+                 :env #ig/ref :backend/env}
+
+ :backend/env {:profile #ig/ref :backend/profile
+               :db #ig/ref :backend/db}
 
  :backend/nrepl {:bind #profile {:prod "0.0.0.0"
                                  :test "localhost"

@@ -7,8 +7,8 @@
 (integrant.repl/set-prep! main/system-config-start)
 
 (defn system [] (or state/system (throw (ex-info "System not running" {}))))
-
 (defn env [] (:backend/env (system)))
+(defn db [] (:backend/db (system)))
 
 (defn my-dummy-reset []
   (reset))
