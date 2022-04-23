@@ -12,7 +12,8 @@
     [ring.adapter.jetty :as jetty]
     [aero.core :as aero]
     [potpuri.core :as p]
-    [simpleserver.webserver :as f-ws])
+    [simpleserver.webserver :as ws]
+    [simpleserver.devdata.dev-data :as dev-data])
   (:import (com.zaxxer.hikari HikariDataSource))
   (:gen-class))
 
@@ -23,7 +24,7 @@
 
 (defmethod ig/init-key :backend/jetty [_ {:keys [port join? env]}]
   (log/debug "ENTER ig/init-key :backend/jetty")
-  (-> (f-ws/handler (f-ws/routes env))
+  (-> (ws/handler (ws/routes env))
       (jetty/run-jetty {:port port :join? join?})))
 
 (defmethod ig/halt-key! :backend/jetty [_ server]
@@ -45,6 +46,13 @@
 (defmethod ig/init-key :backend/db-super [_ opts]
   (log/debug "ENTER ig/init-key! :backend/db-super")
   opts)
+
+(defmethod ig/init-key :backend/dev-data [_ {:keys [profile initialize force-initialize db-super]}]
+  (log/debug "ENTER ig/init-key! :backend/dev-data")
+  (when (or force-initialize (and (= profile :dev) initialize))
+    (do
+      (log/info "Copying development data to Postgres...")
+      (dev-data/copy-dev-data db-super))))
 
 (defmethod ig/init-key :backend/env [_ env]
   (log/debug "ENTER ig/init-key! :backend/env")

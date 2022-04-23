@@ -69,6 +69,7 @@
 @run-uberjar:
     # Change to target to make sure we are not using dev-resources folder but prod-resources is baked into jar.
     cd target && PROFILE=prod java -Dclojure.tools.logging.factory=clojure.tools.logging.impl/slf4j-factory -jar simpleserver.jar
+    # cd target && DB_FORCE_INITIALIZE_DEV_DATA=true PROFILE=prod java -Dclojure.tools.logging.factory=clojure.tools.logging.impl/slf4j-factory -jar simpleserver.jar
 
 # Print dependency tree.
 @print-deps:

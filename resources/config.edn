@@ -13,7 +13,7 @@
                     :host #or [#env DB_HOST "localhost"]
                     :port #long #or [#env DB_PORT 5512]
                     ; NOTE: See: postgres/docker-compose-setup-local-postgres.yml
-                    :dev-data "/var/lib/postgresql/dev-data"}
+                    :dev-data-dir "/var/lib/postgresql/dev-data"}
 
  :backend/db {:dbtype "postgresql"
               :dbname #or [#env DB_NAME "simpleserver"]
@@ -26,6 +26,12 @@
                                      :validation-timeout 3000
                                      :maximum-pool-size 5}}
 
+:backend/dev-data {:profile #ig/ref :backend/profile
+                   :db-super #ig/ref :backend/db-super
+                   ; In dev environment needs to be on to initialize database with dev data.
+                   :initialize  #boolean #or [#env DB_INITIALIZE_DEV_DATA true]
+                   ; Force initialize database with test data no matter which environment we are running.
+                   :force-initialize  #boolean #or [#env DB_FORCE_INITIALIZE_DEV_DATA false]}
 
  :backend/jetty {:port #profile {:dev #long #or [#env PORT 4265]
                                  :test #long #or [#env PORT 4266]
